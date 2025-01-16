@@ -1,0 +1,4 @@
+# Visual Studio related files and folders
+.vs/
+bin/
+obj/
