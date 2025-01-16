@@ -1,0 +1,15 @@
+C:\Users\wojt6\source\repos\Hospital Admin System\bin\Debug\net8.0\Hospital Admin System.exe
+C:\Users\wojt6\source\repos\Hospital Admin System\bin\Debug\net8.0\Hospital Admin System.deps.json
+C:\Users\wojt6\source\repos\Hospital Admin System\bin\Debug\net8.0\Hospital Admin System.runtimeconfig.json
+C:\Users\wojt6\source\repos\Hospital Admin System\bin\Debug\net8.0\Hospital Admin System.dll
+C:\Users\wojt6\source\repos\Hospital Admin System\bin\Debug\net8.0\Hospital Admin System.pdb
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.AssemblyInfoInputs.cache
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.AssemblyInfo.cs
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.csproj.CoreCompileInputs.cache
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.sourcelink.json
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.dll
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\refint\Hospital Admin System.dll
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.pdb
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\Hospital Admin System.genruntimeconfig.cache
+C:\Users\wojt6\source\repos\Hospital Admin System\obj\Debug\net8.0\ref\Hospital Admin System.dll

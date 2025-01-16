@@ -36,11 +36,24 @@ namespace Hospital_Admin_System
             }
         }
 
-        public Doctor(string name, string surname, int pesel, string username, string password, Specialization specialty, string pwz, Role role)
+        public Doctor(string name, string surname, string pesel, string username, string password, Specialization specialty, string pwz, Role role)
             : base(name, surname, pesel, username, password, role)
         {
             Specialty = specialty;
             PWZ = pwz;
+        }
+
+        public override bool AddOnCallDay(DateTime day)
+        {
+            var conflict = OnCallSchedule.Any(entry => entry.Key == day && entry.Value is Doctor doc && doc.Specialty == this.Specialty);
+
+            if (conflict)
+            {
+                Console.WriteLine($"Error: A {Specialty} is already on-call on {day:yyyy-MM-dd}.");
+                return false;
+            }
+
+            return base.AddOnCallDay(day);
         }
     }
 }

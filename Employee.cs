@@ -17,13 +17,13 @@ namespace Hospital_Admin_System
 
         public string Name { get; set; }
         public string Surname { get; set; }
-        private int _pesel;
-        public int PESEL
+        private string _pesel;
+        public string PESEL
         {
             get { return _pesel; }
             private set
             {
-                if (value.ToString().Length == 11)
+                if (value.Length == 11 && value.All(char.IsDigit))
                 {
                     _pesel = value;
                 }
@@ -37,9 +37,9 @@ namespace Hospital_Admin_System
         public string Password { get; set; }
         public Role UserRole { get; set; }
 
-        protected static readonly Dictionary<DateTime, Employee> OnCallSchedule = new();
+        public static readonly Dictionary<DateTime, Employee> OnCallSchedule = new();
 
-        public Employee(string name, string surname, int pesel, string username, string password, Role userRole)
+        public Employee(string name, string surname, string pesel, string username, string password, Role userRole)
         {
             Name = name;
             Surname = surname;
@@ -59,5 +59,16 @@ namespace Hospital_Admin_System
             return this.Password == password && this.Username == username;
         }
 
+        public virtual bool AddOnCallDay(DateTime day)
+        {
+            if (OnCallSchedule.ContainsKey(day))
+            {
+                Console.WriteLine($"Error: {OnCallSchedule[day].Name} {OnCallSchedule[day].Surname} is already on call for {day:yyy-MM-dd}.");
+                return false;
+            }
+            OnCallSchedule[day] = this;
+            Console.WriteLine($"On-call day {day:yyyy-MM-dd} assigned to {Name} {Surname}");
+            return true;
+        }
     }
 }
