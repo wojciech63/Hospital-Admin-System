@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public abstract class Employee
 {
+    private static List<Employee> employees = new List<Employee>();
     public enum Role
     {
         Doctor,
@@ -10,6 +11,7 @@ public abstract class Employee
         Administrator
     }
 
+    public int ID { get; private set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string PESEL { get; private set; }
@@ -19,14 +21,15 @@ public abstract class Employee
 
     public override string ToString()
     {
-        return $"{Name} {Surname} ({UserRole})";
+        return $"ID: {ID} | {Name} {Surname} ({UserRole})";
     }
 
 
-    protected static readonly Dictionary<DateTime, Employee> OnCallSchedule = new();
-
+    protected static readonly Dictionary<DateTime, Doctor> OnCallSchedule = new();
+    private static int _nextID = 1;
     public Employee(string name, string surname, string pesel, string username, string password, Role role)
     {
+        ID = _nextID++;
         Name = name;
         Surname = surname;
         Username = username;
@@ -40,8 +43,25 @@ public abstract class Employee
         PESEL = pesel;
     }
 
-    public virtual bool AddOnCallDay(DateTime day)
+    public virtual bool AddOnCallDayByID(List <Employee> employees, int id, DateTime day)
     {
+
+        var employee = employees.FirstOrDefault(e => e.ID == id);
+
+        if (employee == null)
+        {
+            Console.WriteLine($"Error: Employee with ID: {id} note found");
+            return false;
+        }
+
+        if (OnCallSchedule.TryGetValue(day, out Doctor assignedEmployee))
+        {
+            if (assignedEmployee is Employee assignedDoctor && assignedDoctor.UserRole == Employee.Role.Doctor)
+            {
+
+            }
+        }
+
         if (OnCallSchedule.ContainsKey(day))
         {
             Console.WriteLine($"Error: {OnCallSchedule[day].Name} {OnCallSchedule[day].Surname} is already on call for {day:yyyy-MM-dd}.");
@@ -53,7 +73,7 @@ public abstract class Employee
         return true;
     }
 
-    public virtual void DisplayOnCallSchedule()
+    public void DisplayOnCallSchedule()
     {
         Console.WriteLine($"On-call schedule for {Name} {Surname}:");
         foreach (var entry in OnCallSchedule)
