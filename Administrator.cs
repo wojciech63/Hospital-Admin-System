@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HospitalSystem;
 
-namespace Hospital_Admin_System
+namespace HospitalSystem
 {
     public class Administrator : Employee
     {
-        public Administrator(string name, string surname, string pesel, string username, string password, Role role)
-            : base(name, surname, pesel, username, password, role)
+        public Administrator(string name, string surname, string pesel, string username, string password)
+            : base(name, surname, pesel, username, password, Role.Administrator)
         {
         }
     }

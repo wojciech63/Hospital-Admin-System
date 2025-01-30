@@ -1,88 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using HospitalSystem;
 
-public abstract class Employee
+namespace HospitalSystem
 {
-    private static List<Employee> employees = new List<Employee>();
-    public enum Role
+    public abstract class Employee
     {
-        Doctor,
-        Nurse,
-        Administrator
-    }
+        public static Dictionary<DateTime, List<Employee>> OnCallSchedule { get; private set; }
+            = new Dictionary<DateTime, List<Employee>>();
 
-    public int ID { get; private set; }
-    public string Name { get; set; }
-    public string Surname { get; set; }
-    public string PESEL { get; private set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public Role UserRole { get; set; }
+        private static int _nextID = 1;
 
-    public override string ToString()
-    {
-        return $"ID: {ID} | {Name} {Surname} ({UserRole})";
-    }
+        public int ID { get; private set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string PESEL { get; private set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public Role UserRole { get; set; }
 
-
-    protected static readonly Dictionary<DateTime, Doctor> OnCallSchedule = new();
-    private static int _nextID = 1;
-    public Employee(string name, string surname, string pesel, string username, string password, Role role)
-    {
-        ID = _nextID++;
-        Name = name;
-        Surname = surname;
-        Username = username;
-        Password = password;
-        UserRole = role;
-
-        if (pesel.Length != 11 || !long.TryParse(pesel, out _))
+        protected Employee(string name, string surname, string pesel, string username, string password, Role role)
         {
-            throw new ArgumentException("PESEL must be an 11-digit number.");
+            ID = _nextID++;
+            Name = name;
+            Surname = surname;
+            Username = username;
+            Password = password;
+            UserRole = role;
+
+            if (pesel.Length != 11 || !long.TryParse(pesel, out _))
+                throw new ArgumentException("PESEL must be an 11-digit number.");
+
+            PESEL = pesel;
         }
-        PESEL = pesel;
-    }
 
-    public virtual bool AddOnCallDayByID(List <Employee> employees, int id, DateTime day)
-    {
-
-        var employee = employees.FirstOrDefault(e => e.ID == id);
-
-        if (employee == null)
+        public override string ToString()
         {
-            Console.WriteLine($"Error: Employee with ID: {id} note found");
+            return $"ID: {ID} | {Name} {Surname} ({UserRole})";
+        }
+
+        public virtual bool AddOnCallDay(DateTime date)
+        {
+            Console.WriteLine("This role does not have on-call duties.");
             return false;
         }
 
-        if (OnCallSchedule.TryGetValue(day, out Doctor assignedEmployee))
+        public virtual bool RemoveOnCallDay(DateTime date)
         {
-            if (assignedEmployee is Employee assignedDoctor && assignedDoctor.UserRole == Employee.Role.Doctor)
+            if (OnCallSchedule.TryGetValue(date, out var list))
             {
-
+                if (list.Remove(this))
+                {
+                    if (list.Count == 0) OnCallSchedule.Remove(date);
+                    return true;
+                }
             }
-        }
-
-        if (OnCallSchedule.ContainsKey(day))
-        {
-            Console.WriteLine($"Error: {OnCallSchedule[day].Name} {OnCallSchedule[day].Surname} is already on call for {day:yyyy-MM-dd}.");
             return false;
         }
 
-        OnCallSchedule[day] = this;
-        Console.WriteLine($"On-call day {day:yyyy-MM-dd} assigned to {Name} {Surname}.");
-        return true;
-    }
-
-    public void DisplayOnCallSchedule()
-    {
-        Console.WriteLine($"On-call schedule for {Name} {Surname}:");
-        foreach (var entry in OnCallSchedule)
+        public void DisplayScheduleForMonth(int month)
         {
-            if (entry.Value == this)
+            var assignedDays = OnCallSchedule
+                .Where(kvp => kvp.Key.Month == month && kvp.Value.Contains(this))
+                .Select(kvp => kvp.Key)
+                .OrderBy(d => d);
+
+            Console.WriteLine($"=== Schedule for {Name} {Surname} in month {month} ===");
+            if (!assignedDays.Any())
             {
-                Console.WriteLine($"- {entry.Key:yyyy-MM-dd}");
+                Console.WriteLine("No assigned days.");
+            }
+            else
+            {
+                foreach (var day in assignedDays)
+                {
+                    Console.WriteLine($" - {day:yyyy-MM-dd}");
+                }
             }
         }
+
+        public static bool AssignOnCallDayByID(List<Employee> allEmployees, int employeeID, DateTime date)
+        {
+            var emp = allEmployees.FirstOrDefault(e => e.ID == employeeID);
+            if (emp == null)
+            {
+                Console.WriteLine($"No employee with ID={employeeID} found.");
+                return false;
+            }
+            return emp.AddOnCallDay(date);
+        }
+
+        public static bool RemoveOnCallDayByID(List<Employee> allEmployees, int employeeID, DateTime date)
+        {
+            var emp = allEmployees.FirstOrDefault(e => e.ID == employeeID);
+            if (emp == null)
+            {
+                Console.WriteLine($"No employee with ID={employeeID} found.");
+                return false;
+            }
+            return emp.RemoveOnCallDay(date);
+        }
+
+        protected int GetAssignedDaysThisMonth(DateTime date)
+        {
+            return OnCallSchedule
+                .Where(kvp => kvp.Key.Year == date.Year && kvp.Key.Month == date.Month)
+                .Count(kvp => kvp.Value.Contains(this));
+        }
+
+        protected bool IsConsecutiveDay(DateTime date)
+        {
+            var prev = date.AddDays(-1);
+            var next = date.AddDays(1);
+
+            if (OnCallSchedule.TryGetValue(prev, out var prevList) && prevList.Contains(this))
+                return true;
+
+            if (OnCallSchedule.TryGetValue(next, out var nextList) && nextList.Contains(this))
+                return true;
+
+            return false;
+        }
     }
-    
 }

@@ -1,31 +1,45 @@
 ﻿using System;
-using System.Xml.Linq;
+using System.Linq;
+using HospitalSystem;
 
-public class Nurse : Employee
+namespace HospitalSystem
 {
-    public Nurse(string name, string surname, string pesel, string username, string password, Role role)
-        : base(name, surname, pesel, username, password, role)
+    public class Nurse : Employee
     {
-    }
-
-    public override bool AddOnCallDay(DateTime day)
-    {
-        if (OnCallSchedule.ContainsKey(day))
+        public Nurse(string name, string surname, string pesel, string username, string password)
+            : base(name, surname, pesel, username, password, Role.Nurse)
         {
-            if (OnCallSchedule[day] is Nurse nurse && nurse != this)
-            {
-                Console.WriteLine($"Error: Another Nurse is already on call for {day:yyyy-MM-dd}.");
-                return false;
-            }
-            if (OnCallSchedule[day] == this)
-            {
-                Console.WriteLine($"Error: {Name} {Surname} is already on call for {day:yyyy-MM-dd}.");
-                return false;
-            }
         }
 
-        OnCallSchedule[day] = this;
-        Console.WriteLine($"On-call day {day:yyyy-MM-dd} assigned to {Name} {Surname}.");
-        return true;
+        public override bool AddOnCallDay(DateTime date)
+        {
+            if (GetAssignedDaysThisMonth(date) >= 10)
+            {
+                Console.WriteLine($"Nurse {Name} {Surname} already has 10 on-call days in {date:yyyy-MM}.");
+                return false;
+            }
+
+            if (IsConsecutiveDay(date))
+            {
+                Console.WriteLine($"Nurse {Name} {Surname} cannot have consecutive on-call days around {date:yyyy-MM-dd}.");
+                return false;
+            }
+
+            if (!OnCallSchedule.TryGetValue(date, out var employeesThatDay))
+            {
+                employeesThatDay = new System.Collections.Generic.List<Employee>();
+                OnCallSchedule[date] = employeesThatDay;
+            }
+            bool nurseExists = employeesThatDay.OfType<Nurse>().Any();
+            if (nurseExists)
+            {
+                Console.WriteLine($"Another nurse is already on-call on {date:yyyy-MM-dd}.");
+                return false;
+            }
+
+            employeesThatDay.Add(this);
+            Console.WriteLine($"Assigned Nurse {Name} {Surname} on {date:yyyy-MM-dd}.");
+            return true;
+        }
     }
 }
