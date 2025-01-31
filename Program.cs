@@ -345,12 +345,14 @@ namespace HospitalSystem
 
         static void SeedSampleData()
         {
-            employees.Add(new Administrator("Alice", "Admin", "11111111111", "admin", "admin123"));
-            employees.Add(new Doctor("John", "Smith", "22222222222", "doc1", "docpass",
+            employees.Add(new Administrator("Admin", "Admin", "11111111111", "admin", "admin123"));
+            employees.Add(new Doctor("Jan", "Nowak", "22222222222", "doctor1", "doctorpassword",
                                      Specialization.Cardiologist, "1234567"));
-            employees.Add(new Doctor("Karen", "Gray", "33333333333", "doc2", "docpass2",
+            employees.Add(new Doctor("Adam", "Małysz", "55555555555", "doctor3", "doctorpassword",
+                         Specialization.Neurologist, "7654721"));
+            employees.Add(new Doctor("Robert", "Kubica", "33333333333", "doctor2", "doctorpassword",
                                      Specialization.Neurologist, "7654321"));
-            employees.Add(new Nurse("Linda", "White", "44444444444", "nurse1", "nursepass"));
+            employees.Add(new Nurse("Aleksandra", "Nowak", "44444444444", "nurse1", "nursepass"));
         }
     }
 }
