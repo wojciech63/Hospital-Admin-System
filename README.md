@@ -1,0 +1,1 @@
+This is my project for OOP made in C#. Tracks employee details (doctors, nurses, admins), manages on-call schedules, and ensures secure login. Features data serialization, role-based access, error handling, and adherence to OOP principles like inheritance, encapsulation, and polymorphism.
